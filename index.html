@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>Api End Point</title>
+    <title>Impact Analysis Report | SmartFied App</title>
     <style>
         .shadow {
             box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.05);
@@ -27,34 +27,42 @@
 
 
         var xmlhttp = new XMLHttpRequest();
-        var url = "https://jsonplaceholder.typicode.com/posts/";
+        var url = "http://localhost:8110/api/POB/GetCompaniesInfo";
+
+        var helpers = {
+    buildDropdown: function(result, dropdown, emptyMessage)
+    {
+        // Remove current options
+        dropdown.html('');
+        dropdown.html('<select>')
+        // Add the empty option with the empty message
+        dropdown.append('<option value="">' + emptyMessage + '</option>');
+
+        // Check result isnt empty
+        if(result != '')
+        {
+            $.each(result, function(k, v) {
+                dropdown.append('<option value="' + k + '">' + v + '</option>');
+            });
+        }
+        dropdown.append('</select>')
+    }
+}
 
 
         function getData(geturl) {
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    var myArr = JSON.parse(this.responseText);
-                    myFunction(myArr);
-                    console.log(myArr)
+                    helpers.buildDropdown(JSON.parse(this.responseText), $('#dropdown'), 'Choose a company');
                 }
             };
             xmlhttp.open("GET", geturl, true);
+            xmlhttp.setRequestHeader( 'Access-Control-Allow-Origin', '*');
             xmlhttp.send();
-        }
-        function myFunction(arr) {
-            if (arr.length > 1) {
-                var i;
-                for (i = 0; i < arr.length; i++) {
-                    document.getElementById('tbody').innerHTML += "<tr><td>" + arr[i].userId + "</td><td>" + arr[i].title + "</td><td>" + arr[i].body + "</td><td>" + arr[i].id + "</td></tr>"
-                }
-            }
-            else {
-                document.getElementById('tbody').innerHTML = "<tr><td>" + arr.userId + "</td><td>" + arr.title + "</td><td>" + arr.body + "</td><td>" + arr.id + "</td></tr>"
-            }
         }
 
         function putRequest() {
-            userid = document.getElementById('userid').value
+            userid = document.getElementById('category').value
             console.log(userid)
             geturl = url + userid
             getData(geturl)
@@ -75,7 +83,7 @@
                 <a href="#"><img src="./images/logo.jpg" height="40px" width="40px"></a>
             </div>
             <div class="col-9 text-left">
-                SpinApp Api Endpoint Response
+                SPIN App - Analytics
             </div>
         </div>
     </div>
@@ -84,41 +92,20 @@
         <div class="h4">Filter:</div>
         <form class="row">
             <div class="form-group col">
-                <label for="userid">Example</label>
-                <select class="form-control" id="userid">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
+                <label for="category">Category</label>
+                <select class="form-control" id="category">
+                    <option>Near_Expiry</option>
+                    <option>Non_Moving</option>
+                    <option>Over_Stock</option>
+                    <option>Under_Stock</option>
                 </select>
             </div>
-            <div class="form-group col">
-                <label for="title">Example</label>
-                <select class="form-control" id="title">
-                    <option>Default select</option>
-                    <option>Default select</option>
-                    <option>Default select</option>
-                </select>
-            </div>
-            <div class="form-group col">
-                <label for="id">Example</label>
-                <select class="form-control" id="id">
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                </select>
-            </div>
-            <div class="form-group col">
-                <label for="id1">Example</label>
-                <select class="form-control" id="id1">
-                    <option>Default select</option>
-                    <option>Default select</option>
-                    <option>Default select</option>
-                </select>
+            <div id="dropdown">
+                
             </div>
         </form>
         <div class="test-right">
-            <button type="button" onclick="putRequest()" class="btn btn-primary">Submit</button>
-            <button type="button" onclick="getAll()" class="btn btn-success">Get All</button>
+            <button type="button" onclick="getAll()" class="btn btn-success">Download Impact Analysis Report</button>
         </div>
     </div>
 
