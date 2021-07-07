@@ -25,8 +25,8 @@ jobs:
           ${{ runner.os }}-node-  
     - name: Build
       run: |
-        CI=true npm install
-        CI=false npm run build
+        #CI=true npm install
+        #CI=false npm run build
         echo "I'm shubham autobot, the code is baked successfully"
     - name: Package
       env: 
